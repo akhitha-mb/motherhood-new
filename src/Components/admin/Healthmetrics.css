@@ -1,0 +1,36 @@
+/* App.css */
+.disease-form {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  
+  .disease-form h2 {
+    margin-bottom: 15px;
+  }
+  
+  .disease-form div {
+    margin-bottom: 15px;
+  }
+  
+  .disease-form label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .disease-form .btn {
+    margin-top: 15px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .disease-form .btn:hover {
+    background-color: #0056b3;
+  }
+  
