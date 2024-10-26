@@ -16,6 +16,7 @@ const Doctorsignup = () => {
 
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -24,18 +25,51 @@ const Doctorsignup = () => {
     });
   };
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePhoneNumber = (phoneNumber) => {
+    const phoneRegex = /^[0-9]{10}$/; // Adjust to your requirements
+    return phoneRegex.test(phoneNumber);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // Reset error state
-    setSuccess(''); // Reset success state
-    
+    setError('');
+    setSuccess('');
+
+    // Basic validation to ensure fields are not empty
+    if (!formData.name || !formData.email || !formData.password || 
+        !formData.specialization || !formData.qualification || 
+        !formData.experience || !formData.hospital || !formData.phoneNumber) {
+      setError('All fields are required.');
+      return;
+    }
+
+    // Additional validation for email and phone number
+    if (!validateEmail(formData.email)) {
+      setError('Invalid email format.');
+      return;
+    }
+
+    if (!validatePhoneNumber(formData.phoneNumber)) {
+      setError('Invalid phone number format.');
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setError('Password should be at least 8 characters long.');
+      return;
+    }
+
+    setLoading(true); // Start loading indicator
+
     try {
       const response = await axios.post('http://localhost:8080/api/doctor/register', formData);
       if (response.data.success) {
         setSuccess('Registration successful!'); // Set success message
-        console.log('sett');
-        
-        // Reset form fields
         setFormData({
           name: '',
           email: '',
@@ -51,7 +85,13 @@ const Doctorsignup = () => {
       }
     } catch (error) {
       console.error('Error submitting form:', error);
-      setError('An error occurred while submitting the form.'); // General error message
+      if (error.response) {
+        setError(error.response.data.message || 'An error occurred while submitting the form.');
+      } else {
+        setError('Network error: Unable to connect to the server.');
+      }
+    } finally {
+      setLoading(false); // Stop loading indicator
     }
   };
 
@@ -77,7 +117,9 @@ const Doctorsignup = () => {
           </div>
         ))}
 
-        <button type="submit" className='btn btn-success'>Sign Up</button>
+        <button type="submit" className='btn btn-success' disabled={loading}>
+          {loading ? 'Signing Up...' : 'Sign Up'}
+        </button>
       </form>
     </div>
   );
