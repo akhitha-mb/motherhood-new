@@ -1,116 +1,189 @@
+// import React, { useState } from 'react';
+// import { Link, useNavigate } from 'react-router-dom';
+// import axios from 'axios';
+
+// const Dlogin = () => {
+//     const [formData, setFormData] = useState({
+//         email: '',
+//         password: '',
+//     });
+//     const [error, setError] = useState(null);
+//     const navigate = useNavigate();
+
+//     const { email, password } = formData;
+
+//     // Handle input change
+//     const onChange = (e) => {
+//         setFormData({ ...formData, [e.target.name]: e.target.value });
+//     };
+
+//     // Handle form submission
+//     const onSubmit = async (e) => {
+//         e.preventDefault();
+//         setError(null); // Reset error before login attempt
+
+//         try {
+//             const response = await axios.post("http://localhost:8080/api/doctor/dlogin", formData);
+
+//             if (response.data.success) {
+//                 // Assuming token and userid are returned upon successful login
+//                 sessionStorage.setItem('token', response.data.token);
+//                 sessionStorage.setItem('userid', response.data.userid);
+//                 alert('Login successful!');
+
+//                 // Redirect to the doctordash page
+//                 navigate('/doctordash'); 
+//             } else {
+//                 setError(response.data.message || 'Login failed. Please try again.');
+//             }
+//         } catch (error) {
+//             console.error('Login error:', error);
+//             setError('An error occurred. Please check your network or try again later.');
+//         }
+//     };
+
+//     return (
+//         <div className="d-flex justify-content-center align-items-center vh-100">
+//             <div className="container">
+//                 <h2 className="text-center mb-4">Doctor Login</h2>
+//                 <form onSubmit={onSubmit} className="col-12 col-sm-8 col-md-6 col-lg-5 mx-auto">
+//                     {error && <div className="alert alert-danger text-center">{error}</div>}
+//                     <div className="mb-3">
+//                         <label htmlFor="email" className="form-label">Email</label>
+//                         <input
+//                             type="email"
+//                             className="form-control"
+//                             name="email"
+//                             value={email}
+//                             onChange={onChange}
+//                             required
+//                         />
+//                     </div>
+//                     <div className="mb-3">
+//                         <label htmlFor="password" className="form-label">Password</label>
+//                         <input
+//                             type="password"
+//                             className="form-control"
+//                             name="password"
+//                             value={password}
+//                             onChange={onChange}
+//                             required
+//                         />
+//                     </div>
+//                     <div className="d-flex justify-content-center">
+//                         <button type="submit" className="btn btn-success">Log In</button>
+//                     </div>
+//                 </form>
+//                 <div className="col-12 text-center mt-4">
+//                     <h6>Don't have an account?</h6>
+//                     <Link to="/dSignup" className="btn btn-primary">Create an Account</Link>
+//                 </div>
+//                 <Link to="/doctordash" style={{
+//                     position: 'absolute',
+//                     top: '20px',
+//                     left: '20px',
+//                     color: 'black',
+//                     textDecoration: 'none',
+//                     fontWeight: 'bold',
+//                 }}></Link>
+//             </div>
+//         </div>
+//     );
+// };
+
+// export default Dlogin;
 import React, { useState } from 'react';
-import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Dlogin = () => {
-    const [data, setData] = useState({
-        email: "",
-        password: ""
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
     });
-    const [errorMessage, setErrorMessage] = useState("");
-    let navigate = useNavigate();
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
-    const inputHandler = (event) => {
-        setData({ ...data, [event.target.name]: event.target.value });
+    const { email, password } = formData;
+
+    // Handle input change
+    const onChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const readValue = async () => {
-        if (!data.email || !data.password) {
-            setErrorMessage("Please enter both email and password.");
-            return;
-        }
+    // Handle form submission
+    const onSubmit = async (e) => {
+        e.preventDefault();
+        setError(null); // Reset error before login attempt
 
         try {
-            const response = await axios.post("http://localhost:8080/api/doctor/dlogin",data);
+            const response = await axios.post("http://localhost:8080/api/doctor/dlogin", formData);
 
-            if (response.data.status === "Success") {
-                sessionStorage.setItem("token", response.data.token);
-                sessionStorage.setItem("userid", response.data.userid);
-                localStorage.setItem('useremail', data.email);
-                alert("LOGGED IN");
-                navigate('/userhome');
-            } else if (response.data.status === "Error") {
-                setErrorMessage(response.data.message);
+            if (response.data.success) {
+                // Assuming token, userid, and doctorName are returned upon successful login
+                sessionStorage.setItem('token', response.data.token);
+                sessionStorage.setItem('userid', response.data.userid);
+                
+                // Save doctorName in localStorage
+                localStorage.setItem('doctorName', response.data.doctorName);
+
+                alert('Login successful!');
+
+                // Redirect to the doctordash page
+                navigate('/doctordash'); 
             } else {
-                setErrorMessage("Login failed. Please check your credentials.");
+                setError(response.data.message || 'Login failed. Please try again.');
             }
         } catch (error) {
-            console.error("Error submitting login request:", error);
-            setErrorMessage(error.response?.data?.message || "An error occurred. Please try again later.");
+            console.error('Login error:', error);
+            setError('An error occurred. Please check your network or try again later.');
         }
     };
 
     return (
-        <div style={{
-            backgroundImage: `url("https://www.shutterstock.com/image-photo/farmer-his-son-front-sunset-260nw-2189637087.jpg")`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            height: '100vh',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            position: 'relative'
-        }}>
-            <Link to="/" style={{
-                position: 'absolute',
-                top: '20px',
-                left: '20px',
-                color: 'black',
-                textDecoration: 'none',
-                fontWeight: 'bold',
-            }}>Home</Link>
-            <div style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                color: 'black',
-            }}>
-                <div style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.7)',
-                    borderRadius: '15px',
-                    padding: '30px',
-                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
-                    backdropFilter: 'blur(10px)',
-                    maxWidth: '400px',
-                    width: '100%'
-                }}>
-                    <h2 style={{ textAlign: 'center', marginBottom: '20px', color: 'black' }}>Login</h2>
-                    {errorMessage && <div style={{ color: 'red', marginBottom: '15px', textAlign: 'center' }}>{errorMessage}</div>}
-                    <div className="row g-3">
-                        <div className="col-12">
-                            <label className="form-label"><b>Email</b></label>
-                            <input
-                                type="email"
-                                className="form-control"
-                                name='email'
-                                value={data.email}
-                                onChange={inputHandler}
-                                placeholder="Enter your email"
-                                style={{ color: 'black' }}
-                                required
-                            />
-                        </div>
-                        <div className="col-12">
-                            <label className="form-label"><b>Password</b></label>
-                            <input
-                                type="password"
-                                className="form-control"
-                                name='password'
-                                value={data.password}
-                                onChange={inputHandler}
-                                placeholder="Enter your password"
-                                style={{ color: 'black' }}
-                                required
-                            />
-                        </div>
-                        <div className="col-12 d-flex justify-content-center">
-                            <button className="btn btn-success" onClick={readValue}>Login</button>
-                        </div>
-                        <div className="col-12 d-flex justify-content-center" style={{ marginTop: '15px' }}>
-                            <p>Don't have an account? <Link to="/dSignup" style={{ color: 'blue', textDecoration: 'underline' }}>Sign Up</Link></p>
-                        </div>
+        <div className="d-flex justify-content-center align-items-center vh-100">
+            <div className="container">
+                <h2 className="text-center mb-4">Doctor Login</h2>
+                <form onSubmit={onSubmit} className="col-12 col-sm-8 col-md-6 col-lg-5 mx-auto">
+                    {error && <div className="alert alert-danger text-center">{error}</div>}
+                    <div className="mb-3">
+                        <label htmlFor="email" className="form-label">Email</label>
+                        <input
+                            type="email"
+                            className="form-control"
+                            name="email"
+                            value={email}
+                            onChange={onChange}
+                            required
+                        />
                     </div>
+                    <div className="mb-3">
+                        <label htmlFor="password" className="form-label">Password</label>
+                        <input
+                            type="password"
+                            className="form-control"
+                            name="password"
+                            value={password}
+                            onChange={onChange}
+                            required
+                        />
+                    </div>
+                    <div className="d-flex justify-content-center">
+                        <button type="submit" className="btn btn-success">Log In</button>
+                    </div>
+                </form>
+                <div className="col-12 text-center mt-4">
+                    <h6>Don't have an account?</h6>
+                    <Link to="/dSignup" className="btn btn-primary">Create an Account</Link>
                 </div>
+                <Link to="/doctordash" style={{
+                    position: 'absolute',
+                    top: '20px',
+                    left: '20px',
+                    color: 'black',
+                    textDecoration: 'none',
+                    fontWeight: 'bold',
+                }}>Go to Dashboard</Link>
             </div>
         </div>
     );

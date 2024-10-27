@@ -9,6 +9,7 @@ import Doctorsignup from './Components/Doctorsignup';
 
 import PatientDash from './Components/admin/PatientDash';
 import Dlogin from './Components/Dlogin.jsx';
+import Doctordash from './Components/Doctordash.jsx';
 // import Navbar from './Components/admin/Navbar'
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
     
         <Route path='/dSignup' element={<Doctorsignup/>} />
         <Route path='/patientdashboard/*' element={<PatientDash />} /> {/* Use /* for nested routes */}
+        <Route path='/doctordash/*' element={<Doctordash />} />
         {/* Add more routes as needed */}
       </Routes>
     </BrowserRouter>

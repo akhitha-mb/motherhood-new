@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './Doctorsignup.css';
+import { Link } from 'react-router-dom';
 
 const Doctorsignup = () => {
   const [formData, setFormData] = useState({
@@ -121,6 +122,14 @@ const Doctorsignup = () => {
           {loading ? 'Signing Up...' : 'Sign Up'}
         </button>
       </form>
+      <Link to="/" style={{
+                position: 'absolute',
+                top: '20px',
+                left: '20px',
+                color: 'black',
+                textDecoration: 'none',
+                fontWeight: 'bold',
+            }}>Home</Link>
     </div>
   );
 };

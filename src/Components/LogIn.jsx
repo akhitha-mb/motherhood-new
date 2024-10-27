@@ -3,11 +3,12 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const LogIn = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
+  const [errorMessage, setErrorMessage] = useState('');
 
   const { email, password } = formData;
 
@@ -15,25 +16,26 @@ const LogIn = () => {
   const onChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
-    
-    
+    setErrorMessage(''); // Clear error message on input change
   };
 
   // Handle form submission
   const onSubmit = async (e) => {
     e.preventDefault();
-    console.log(email);
-    console.log(password);
+    console.log('Submitting login with email:', email);
+
     try {
       const res = await axios.post('http://localhost:8080/api/user/login', formData);
       console.log('Login successful:', res.data);
+
       // Store the token in localStorage
       localStorage.setItem('token', res.data.token);
+
       // Optionally redirect or show a success message
-      navigate('/patientdashboard/home')
+      navigate('/patientdashboard/home');
     } catch (error) {
       console.error('Error during login:', error.response?.data || error.message);
-      // Optionally show an error message to the user
+      setErrorMessage(error.response?.data?.message || 'Login failed. Please try again.');
     }
   };
 
@@ -43,9 +45,9 @@ const LogIn = () => {
         <div className="row g-3">
           <form onSubmit={onSubmit} className="col-12 col-sm-8 col-md-6 col-lg-5 mx-auto">
             <div className="mb-3">
-              <label htmlFor="email" className="form-label">email</label>
+              <label htmlFor="email" className="form-label">Email</label>
               <input
-                type="text"
+                type="email"
                 className="form-control"
                 name="email"
                 id="email"
@@ -66,6 +68,7 @@ const LogIn = () => {
                 required
               />
             </div>
+            {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
             <div className="d-flex justify-content-center">
               <button type="submit" className="btn btn-success">Log In</button>
             </div>
